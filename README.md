@@ -14,6 +14,7 @@ Trabajo práctico 2: OWASP Top 10 - Configuración CORS
 Build:
 
 ```
+cd deployment
 docker compose build
 ```
 

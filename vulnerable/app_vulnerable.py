@@ -5,11 +5,12 @@ import os
 import redis
 from config import Config
 from flask import Flask, session, redirect, escape, request
-
+from flask_cors import CORS, cross_origin
 
 # Configure the application name with the FLASK_APP environment variable.
 app = Flask(__name__)
 
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # Configure the secret_key with the SECRET_KEY environment variable.
 app.secret_key = os.environ.get('SECRET_KEY', default=None)
@@ -42,7 +43,8 @@ class SessionStore:
         self.redis.expire(self.token, self.ttl)
 
 
-@app.route('/')
+@app.route('/sensitive-victim-data')
+@cross_origin()
 def index():
     if 'username' in session:
         username = escape(session['username'])
@@ -66,7 +68,7 @@ def login():
         session['password'] = request.form['password']
         if session['password'] != Config.password:
             raise Exception('Invalid login')
-        return redirect('/')
+        return redirect('/sensitive-victim-data')
     return '''
         <form method="post">
         <label>Enter your username: </label>

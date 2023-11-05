@@ -1,0 +1,29 @@
+services:
+  redis: 
+    image: redislabs/redismod
+    ports:
+      - '6379:6379' 
+  malicious:
+    build:
+      context: ..
+      dockerfile: build/malicious/Dockerfile
+    ports:
+        - "8001:8001"
+    volumes:
+        - data:/code
+    depends_on:
+      - redis
+
+  vulnerable:
+    build:
+      context: ..
+      dockerfile: build/vulnerable/Dockerfile
+    ports:
+        - "8000:8000"
+    volumes:
+        - data:/code
+    depends_on:
+      - redis
+
+volumes:
+  data:
