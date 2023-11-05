@@ -1,9 +1,6 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-import os
-import redis
-from config import Config
 from flask import Flask, session, redirect, escape, request
 from flask_cors import CORS, cross_origin
 
