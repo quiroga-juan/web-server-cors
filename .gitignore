@@ -1,0 +1,8 @@
+# VS Code files for those working on multiple tools
+.vscode
+.venv/
+
+__pycache__/
+**__pycache__/
+.pytest_cache/
+**.pytest_cache/
