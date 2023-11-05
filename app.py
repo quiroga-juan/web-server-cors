@@ -3,6 +3,7 @@
 
 import os
 import redis
+from config import Config
 from flask import Flask, session, redirect, escape, request
 
 
@@ -63,15 +64,18 @@ def login():
     if request.method == 'POST':
         session['username'] = request.form['username']
         session['password'] = request.form['password']
+        if session['password'] != Config.password:
+            raise Exception('Invalid login')
         return redirect('/')
     return '''
         <form method="post">
+        <label>Enter your username: </label>
         <p><input type=text name=username>
+        <label>Enter your password: </label>
         <p><input type=text name=password>
         <p><input type=submit value=Login>
         </form>
     '''
-
 
 @app.route('/logout')
 def logout():
