@@ -4,5 +4,6 @@ FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
 WORKDIR /code
 
 COPY . /code
-RUN mkdir hola
-RUN file="$(ls)" && echo $file
+
+ENTRYPOINT ["python3"]
+CMD ["app_malicious.py"]
