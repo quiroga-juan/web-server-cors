@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
 
-WORKDIR /vulnerable
+WORKDIR /app
 
 COPY vulnerable/requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip \
