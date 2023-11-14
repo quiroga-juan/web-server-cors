@@ -1,25 +1,22 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-from flask import Flask, session, redirect, escape, request
-from flask_cors import CORS, cross_origin
+from flask import Flask
+import codecs
 
 # Configure the application name with the FLASK_APP environment variable.
 app = Flask(__name__)
 
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
-
 
 @app.route('/', methods=['GET', 'POST'])
 def execute():
-    if request.method == 'POST':
-        
-        return 'hola'
-    return '''
-        <form method="post">
-        <p><input type=submit value=Execute>
-        </form>
-    '''
+    f=codecs.open("test.html", 'r')
+    return f.read()
+
+@app.route('/with-cors', methods=['GET', 'POST'])
+def execute_():
+    f=codecs.open("test_with_cors.html", 'r')
+    return f.read()
 
 
 if __name__ == "__main__":

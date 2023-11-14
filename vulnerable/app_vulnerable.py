@@ -4,13 +4,13 @@
 import os
 import redis
 from config import Config
-from flask import Flask, session, redirect, escape, request
-from flask_cors import CORS, cross_origin
+from flask import Flask, session, redirect, request, make_response
+from flask_cors import CORS
 
 # Configure the application name with the FLASK_APP environment variable.
 app = Flask(__name__)
 
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+cors = CORS(app, supports_credentials=True)
 
 # Configure the secret_key with the SECRET_KEY environment variable.
 app.secret_key = os.environ.get('SECRET_KEY', default=None)
@@ -44,21 +44,34 @@ class SessionStore:
 
 
 @app.route('/sensitive-victim-data')
-@cross_origin()
 def index():
-    if 'username' in session:
-        username = escape(session['username'])
+    username = 'pepe'
+    header_request = request.headers['Origin']
+    response = '''
+        Logged in as {0}.
+        Visits: {1}
+    '''.format(username, 1)
+    response = make_response(response)
+    response.headers.add("Access-Control-Allow-Origin", header_request)
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    response.headers.add('Access-Control-Allow-Credentials', "true")
+    return response
 
-        store = SessionStore(username, REDIS_URL)
+@app.route('/sensitive-victim-data-with-cors')
+def index_with_cors():
+    username = 'pepe'
+    response = '''
+        Logged in as {0}.<br>
+        Visits: {1}
+    '''.format(username, 1)
+    response = make_response(response)
+    response.headers.add("Access-Control-Allow-Origin", "http://localhost:8000")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    response.headers.add('Access-Control-Allow-Credentials', "true")
+    return response
 
-        visits = store.incr('visits')
-
-        return '''
-            Logged in as {0}.<br>
-            Visits: {1}
-        '''.format(username, visits)
-
-    return 'You are not logged in'
 
 
 @app.route('/login', methods=['GET', 'POST'])
