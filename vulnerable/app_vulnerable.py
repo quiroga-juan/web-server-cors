@@ -4,7 +4,7 @@
 import os
 import redis
 from config import Config
-from flask import Flask, session, redirect, request, make_response
+from flask import Flask, session, redirect, escape, request, make_response, jsonify
 from flask_cors import CORS
 
 # Configure the application name with the FLASK_APP environment variable.
@@ -29,7 +29,7 @@ class SessionStore:
 
     def set(self, key, value):
         self.refresh()
-        return self.redis.hset(self.token, key, value)
+        return self.redis.hset(self.token, key, value, exp=self.ttl)
 
     def get(self, key, value):
         self.refresh()
@@ -45,18 +45,26 @@ class SessionStore:
 
 @app.route('/sensitive-victim-data')
 def index():
-    username = 'pepe'
-    header_request = request.headers['Origin']
-    response = '''
-        Logged in as {0}.
-        Visits: {1}
-    '''.format(username, 1)
-    response = make_response(response)
-    response.headers.add("Access-Control-Allow-Origin", header_request)
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    response.headers.add('Access-Control-Allow-Credentials', "true")
-    return response
+    if 'username' in session:
+        username = escape(session['username'])
+
+        store = SessionStore(username, REDIS_URL)
+
+        visits = store.incr('visits')
+        response = {
+            'user': username,
+            'visits': visits
+        }
+        response = make_response(jsonify(response))
+        if 'Origin' in request.headers:
+            header_request = request.headers['Origin']
+            response.headers.add("Access-Control-Allow-Origin", header_request)
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            response.headers.add('Access-Control-Allow-Credentials', "true")
+        return response
+
+    return 'You are not logged in'
 
 @app.route('/sensitive-victim-data-with-cors')
 def index_with_cors():

