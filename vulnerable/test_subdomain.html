@@ -8,12 +8,10 @@
             req.withCredentials = true;
             req.send();
             function reqListener() {
-                var jsonResponse = JSON.parse(this.responseText);
-
+                var jsonResponse = this.responseText;
+                
                 // Log the parsed JSON object to the console
                 console.log(jsonResponse);
-
-
             };
 
         }
