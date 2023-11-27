@@ -6,6 +6,8 @@ import redis
 from config import Config
 from flask import Flask, session, redirect, escape, request, make_response, jsonify
 from flask_cors import CORS
+import codecs
+
 
 # Configure the application name with the FLASK_APP environment variable.
 app = Flask(__name__)
@@ -80,6 +82,10 @@ def index_with_cors():
     response.headers.add('Access-Control-Allow-Credentials', "true")
     return response
 
+@app.route('/subdomain', methods=['GET'])
+def execute():
+    f=codecs.open("test_subdomain.html", 'r')
+    return f.read()
 
 
 @app.route('/login', methods=['GET', 'POST'])

